@@ -12,6 +12,7 @@ const { generateToken } = require("../../utils/token/tokenService");
 const CustomError = require("../../utils/CustomError");
 const authmw = require("../../middleware/authMiddleware");
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
+const { getGoogleAuthUrl, getGoogleUser } = require("./google-auth");
 //register
 //http://localhost:8181/api/auth/users
 router.post("/users", async (req, res) => {
@@ -32,6 +33,19 @@ router.post("/users", async (req, res) => {
   } catch (err) {
     res.status(400).json(err);
   }
+});
+
+router.get("/auth/google", (req, res) => {
+  const authUrl = getGoogleAuthUrl();
+  res.redirect(authUrl);
+});
+
+router.get("/auth/google/callback", async (req, res) => {
+  const code = req.query.code;
+  const user = await getGoogleUser(code);
+  await usersServiceModel.registerUser(user);
+
+  // TODO: Handle user authentication and redirect to your app
 });
 
 //http://localhost:8181/api/auth/users/login

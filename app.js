@@ -6,23 +6,41 @@ const cors = require("cors");
 const apiRouter = require("./routes/api");
 const config = require("config");
 const initialData = require("./initialData/initialData");
+const chalk = require("chalk");
+const morgan = require("morgan");
 
 const app = express();
 
 console.log("file", config.get("file"));
 // console.log("anotherKey", config.get("anotherKey"));
 
-app.use(cors());
-// app.use(
-//   cors({
-//     origin: "http://127.0.0.1:5500",
-//     optionsSuccessStatus: 200,
-//   })
-// );
+//app.use(cors());
 app.use(
-  logger(
-    ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
-  )
+  cors({
+    origin: ["http://authorizedaddress", "http://localhost:8181/api"],
+
+    optionsSuccessStatus: 200,
+  })
+);
+// app.use(
+//   logger(
+//     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+//   )
+// );
+
+//app.use(logger(":date[iso] :method :url :status :response-time ms"));
+app.use(
+  morgan((tokens, req, res) => {
+    const status = res.statusCode;
+    const color = status < 400 ? chalk.green : chalk.red;
+    const statusText = color(status);
+    const method = tokens.method(req, res);
+    const url = tokens.url(req, res);
+    const responseTime = tokens["response-time"](req, res);
+    return `${chalk.gray(
+      tokens.date(req, res, "iso")
+    )} ${method} ${url} ${statusText} ${color(`${responseTime}ms`)}`;
+  })
 );
 // app.use(
 //   logger((tokens, req, res) => {
