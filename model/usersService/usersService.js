@@ -36,6 +36,7 @@ const updateUser = (id, cardToUpdate) => {
     return usersServiceMongo.updateUser(id, cardToUpdate);
   }
 };
+
 module.exports = {
   registerUser,
   getUserByEmail,

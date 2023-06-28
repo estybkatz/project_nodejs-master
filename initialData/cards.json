@@ -6,11 +6,17 @@
     "phone": "0500000000",
     "email": "kenny1@gmail.com",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "jump street",
       "houseNumber": 23,
       "zip": 0
+    },
+    "web": "",
+    "image": {
+      "url": "",
+      "alt": ""
     }
   },
   {
@@ -20,13 +26,20 @@
     "phone": "0500000000",
     "email": "kenny2@gmail.com",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "jump street",
       "houseNumber": 23,
       "zip": 0
+    },
+    "web": "",
+    "image": {
+      "url": "",
+      "alt": ""
     }
   },
+
   {
     "title": "card3",
     "subTitle": "sub card 3",
@@ -34,11 +47,17 @@
     "phone": "0500000000",
     "email": "kenny3@gmail.com",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "jump street",
       "houseNumber": 23,
       "zip": 0
+    },
+    "web": "",
+    "image": {
+      "url": "",
+      "alt": ""
     }
   }
 ]

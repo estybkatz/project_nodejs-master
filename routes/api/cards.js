@@ -5,6 +5,7 @@ const normalizeCard = require("../../model/cardsService/helpers/normalizationCar
 const cardsValidationService = require("../../validation/cardsValidationService");
 const permissionsMiddleware = require("../../middleware/permissionsMiddlewareCard");
 const authmw = require("../../middleware/authMiddleware");
+const CustomError = require("../../utils/CustomError");
 const { getUserdById } = "../../model/usersService/usersService";
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
 
@@ -29,8 +30,6 @@ router.get(
   async (req, res) => {
     try {
       const Cards = await cardsServiceModel.getAllCards();
-
-      // let userData = await usersServiceModel.getUserdById(userID);
       const myCards = Cards.filter((card) => card.user_id == req.userData._id);
 
       res.json(myCards);
@@ -98,11 +97,47 @@ router.put(
       await cardsValidationService.idUserValidation(req.params.id);
       await cardsValidationService.createCardValidation(req.body);
       await normalizeCard(req.body, req.userData._id);
+      if (req.body.bizNumber) {
+        throw new CustomError("you are not allowed to edit bizNumber");
+      }
+      if (req.body.password) {
+        throw new CustomError("you are not allowed to edit password");
+      }
       const cardFromDB = await cardsServiceModel.updateCard(
         req.params.id,
         req.body
       );
       res.json(cardFromDB);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  }
+);
+
+// bonus 1
+//edit biz num
+// admin
+//http://localhost:8181/api/cards/:id
+router.put(
+  "/biznum/:id",
+  authmw,
+  permissionsMiddleware(false, true, false),
+  async (req, res) => {
+    try {
+      await cardsValidationService.idUserValidation(req.params.id);
+      await cardsValidationService.createCardValidation(req.body);
+      let businessNumbers = await cardsServiceModel.findBizNumber(
+        req.body.bizNumber
+      );
+      if (!businessNumbers) {
+        const cardFromDB = await cardsServiceModel.updateCard(
+          req.params.id,
+          req.body
+        );
+        res.json(cardFromDB);
+      } else {
+        throw new CustomError("The number is not available");
+      }
     } catch (err) {
       res.status(400).json(err);
     }
@@ -175,15 +210,5 @@ router.delete(
     }
   }
 );
-
-/*
-  under the hood
-  let permissionsMiddleware2 = permissionsMiddleware(false, true, false)
-  router.delete(
-  "/:id",
-  authmw,
-  permissionsMiddleware2,
-  (req, res)=>{- - -});
-*/
 
 module.exports = router;

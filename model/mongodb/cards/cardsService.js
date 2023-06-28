@@ -32,6 +32,10 @@ const findOne = (id) => {
   return Card.findOne(id);
 };
 
+const findBizNumber = (bizNumber) => {
+  return Card.findOne({ bizNumber }, { bizNumber: 1, _id: 0 });
+};
+
 module.exports = {
   createCard,
   getAllCards,
@@ -40,4 +44,5 @@ module.exports = {
   updateCard,
   deleteCard,
   findOne,
+  findBizNumber,
 };

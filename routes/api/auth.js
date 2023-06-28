@@ -138,9 +138,6 @@ router.patch(
       await idUserValidation(req.params.id);
       const bizCardID = req.params.id;
       let userData = await usersServiceModel.getUserdById(bizCardID);
-
-      // let bizStatus = userData.isBusiness;
-      //console.log(bizStatus);
       if (userData.isBusiness === true) {
         userData.isBusiness = false;
         userData = await userData.save();
@@ -150,12 +147,6 @@ router.patch(
         userData = await userData.save();
         res.json({ msg: "Editing was done true successfully" });
       }
-
-      // await registerUserValidation(req.body);
-      // req.body.password = await hashService.generateHash(req.body.password);
-      // req.body = normalizeUser(req.body);
-      // await usersServiceModel.registerUser(req.body);
-      // res.json({ msg: "Editing was done successfully" });
     } catch (err) {
       res.status(400).json(err);
     }

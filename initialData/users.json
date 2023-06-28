@@ -2,47 +2,67 @@
   {
     "name": {
       "firstName": "john",
+      "middleName": "johny",
       "lastName": "wich"
     },
     "phone": "0500000000",
     "email": "john@gmail.com",
     "password": "Aa123456!",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "nof ha hof",
       "houseNumber": 255
     },
+    "image": {
+      "url": "",
+      "alt": ""
+    },
+    "isBusiness": false,
     "isAdmin": true
   },
   {
     "name": {
-      "firstName": "john",
+      "firstName": "john2",
+      "middleName": "johny2",
       "lastName": "sinay"
     },
     "phone": "0500000000",
     "email": "johnsinay@gmail.com",
     "password": "Aa123456!",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "nof ha hof",
       "houseNumber": 255
-    }
+    },
+    "image": {
+      "url": "",
+      "alt": ""
+    },
+    "isBusiness": false
   },
   {
     "name": {
       "firstName": "kenny",
+      "middleName": "kenny2",
       "lastName": "mc"
     },
     "phone": "0500000000",
     "email": "kenny@gmail.com",
     "password": "Aa123456!",
     "address": {
+      "state": "not defined",
       "country": "Israel",
       "city": "Ashkeluna",
       "street": "nof ha hof",
       "houseNumber": 255
+    },
+    "image": {
+      "url": "",
+      "alt": ""
     },
     "isBusiness": true
   }
