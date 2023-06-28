@@ -28,6 +28,10 @@ const deleteCard = (id) => {
   return Card.findByIdAndDelete(id);
 };
 
+const findOne = (id) => {
+  return Card.findOne(id);
+};
+
 module.exports = {
   createCard,
   getAllCards,
@@ -35,4 +39,5 @@ module.exports = {
   getCardByBizNumber,
   updateCard,
   deleteCard,
+  findOne,
 };

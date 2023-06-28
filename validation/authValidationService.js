@@ -15,6 +15,7 @@ const loginUserValidation = (userInput) => {
   if (validatorOption === "Joi") {
     return joiLoginValidation.validateLoginSchema(userInput);
   }
+
   throw new Error("validator undefined");
 };
 

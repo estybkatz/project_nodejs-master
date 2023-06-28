@@ -36,6 +36,11 @@ const deleteCard = (id) => {
     return cardsServiceMongo.deleteCard(id);
   }
 };
+const findOne = (id) => {
+  if (dbOption === "mongo") {
+    return cardsServiceMongo.findOne(id);
+  }
+};
 
 module.exports = {
   createCard,
@@ -44,4 +49,5 @@ module.exports = {
   getCardByBizNumber,
   updateCard,
   deleteCard,
+  findOne,
 };

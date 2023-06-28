@@ -15,7 +15,7 @@ const checkIfOwner = async (iduser, idcard, res, next) => {
     if (cardData.user_id == iduser) {
       next();
     } else {
-      res.status(401).json({ msg: "you not the  owner" });
+      res.status(401).json({ msg: "you are not the  owner" });
       console.log(iduser, idcard);
     }
   } catch (err) {
@@ -45,9 +45,7 @@ const permissionsMiddleware = (isBiz, isAdmin, isOwner) => {
       return checkIfOwner(req.userData._id, req.params.id, res, next);
     }
 
-    res
-      .status(401)
-      .json({ msg: "you not allowed to edit this card card middleware" });
+    res.status(401).json({ msg: "you not allowed to edit or create" });
   };
 };
 

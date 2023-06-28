@@ -14,7 +14,6 @@ const DEFAULT_STRING_SCHEMA = {
 
 const DEFAULT_STRING_SCHEMA_REQUIRED = {
   ...DEFAULT_STRING_SCHEMA,
-  minLength: 2,
   required: true,
 };
 

@@ -18,6 +18,9 @@ const normalizeCard = async (card, userId) => {
     },
     bizNumber: card.bizNumber || (await generateBizNumber()),
     user_id: card.user_id || userId,
+    web:
+      card.web ||
+      "https://images.pexels.com/photos/17145787/pexels-photo-17145787/free-photo-of-beach-sand-water-ocean.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
   };
 };
 

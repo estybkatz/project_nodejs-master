@@ -8,6 +8,7 @@ const {
 const Name = new mongoose.Schema({
   firstName: DEFAULT_STRING_SCHEMA_REQUIRED,
   middleName: DEFAULT_STRING_SCHEMA,
+
   lastName: DEFAULT_STRING_SCHEMA_REQUIRED,
 });
 

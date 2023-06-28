@@ -30,10 +30,17 @@ const deleteUser = (id) => {
     return usersServiceMongo.deleteUser(id);
   }
 };
+
+const updateUser = (id, cardToUpdate) => {
+  if (dbOption === "mongo") {
+    return usersServiceMongo.updateUser(id, cardToUpdate);
+  }
+};
 module.exports = {
   registerUser,
   getUserByEmail,
   getAllUsers,
   getUserdById,
-  deleteUser
+  deleteUser,
+  updateUser,
 };

@@ -16,6 +16,12 @@ const getAllUsers = () => {
 const getUserdById = (id) => {
   return User.findById(id);
 };
+const updateUser = (id, userToUpdate) => {
+  //normalize user
+  return User.findByIdAndUpdate(id, userToUpdate, {
+    new: true,
+  });
+};
 
 const deleteUser = (id) => {
   return User.findByIdAndDelete(id);
@@ -26,4 +32,5 @@ module.exports = {
   getAllUsers,
   getUserdById,
   deleteUser,
+  updateUser,
 };

@@ -5,8 +5,10 @@ const normalizeCard = require("../../model/cardsService/helpers/normalizationCar
 const cardsValidationService = require("../../validation/cardsValidationService");
 const permissionsMiddleware = require("../../middleware/permissionsMiddlewareCard");
 const authmw = require("../../middleware/authMiddleware");
+const { getUserdById } = "../../model/usersService/usersService";
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
 
+//סעיף 1
 // get all cards all
 //http://localhost:8181/api/cards
 router.get("/", async (req, res) => {
@@ -17,7 +19,7 @@ router.get("/", async (req, res) => {
     res.status(400).json(err);
   }
 });
-
+//סעיף 2
 //my cards, registered
 //http://localhost:8181/api/cards/my-cards
 router.get(
@@ -50,13 +52,12 @@ router.get(
 
 //});
 
+//סעיף 3
 // all
 //http://localhost:8181/api/cards/:id
 router.get("/:id", async (req, res) => {
   try {
-    //! joi validation
     await cardsValidationService.idUserValidation(req.params.id);
-
     const cardFromDB = await cardsServiceModel.getCardById(req.params.id);
     res.json(cardFromDB);
   } catch (err) {
@@ -64,6 +65,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//סעיף 4
 // create cards, biz only
 //http://localhost:8181/api/cards
 router.post(
@@ -82,6 +84,8 @@ router.post(
     }
   }
 );
+
+//סעיף 5
 //edit
 // owner
 //http://localhost:8181/api/cards/:id
@@ -91,11 +95,9 @@ router.put(
   permissionsMiddleware(false, false, true),
   async (req, res) => {
     try {
-      //* joi validation
-      // normalize
       await cardsValidationService.idUserValidation(req.params.id);
       await cardsValidationService.createCardValidation(req.body);
-      //let normalCard = await normalizeCard(req.body, req.userData._id);
+      await normalizeCard(req.body, req.userData._id);
       const cardFromDB = await cardsServiceModel.updateCard(
         req.params.id,
         req.body
@@ -107,30 +109,48 @@ router.put(
   }
 );
 
+//סעיף 6
 //http://localhost:8181/api/cards/like/:id
-router.patch("/like/:id", authmw, async (req, res) => {
-  try {
-    //! joi validation
-    await cardsValidationService.idUserValidation(req.params.id);
+// router.patch("/like/:id", authmw, async (req, res) => {
+//   try {
+//     await cardsValidationService.idUserValidation(req.params.id);
+//     const cardId = req.params.id;
+//     let cardLike = await cardsServiceModel.getCardById(cardId);
+//     if (cardLike.likes.find((userId) => userId == req.userData._id)) {
+//       const cardFiltered = cardLike.likes.filter(
+//         (userId) => userId != req.userData._id
+//       );
+//       cardLike.likes = cardFiltered;
+//       cardLike = await cardLike.save();
+//       // return res.send(card);
+//     } else {
+//       cardLike.likes = [...cardLike.likes, req.userData._id];
+//       cardLike = await cardLike.save();
+//       // return res.send(card);
+//     }
+//     res.json(cardLike);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
 
-    const cardId = req.params.id;
-    let cardLike = await cardsServiceModel.getCardById(cardId);
-    if (cardLike.likes.find((userId) => userId == req.userData._id)) {
-      const cardFiltered = cardLike.likes.filter(
-        (userId) => userId != req.userData._id
-      );
-      cardLike.likes = cardFiltered;
-      cardLike = await cardLike.save();
-      // return res.send(card);
-    } else {
-      cardLike.likes = [...cardLike.likes, req.userData._id];
-      cardLike = await cardLike.save();
-      // return res.send(card);
+//http://localhost:8181/api/cards/:id
+router.patch("/:id", authmw, async (req, res) => {
+  try {
+    await cardsValidationService.idUserValidation(req.params.id);
+    let card = await cardsServiceModel.findOne({ _id: req.params.id });
+    const cardLikes = card.likes.find((id) => id === req.userData._id);
+    if (!cardLikes) {
+      card.likes.push(req.userData._id);
+      card = await card.save();
+      return res.send(card);
     }
-    res.json(cardLike);
-  } catch (err) {
-    console.log(chalk.redBright("Could not edit like:", err.message));
-    res.status(500).json(err);
+    const cardFiltered = card.likes.filter((id) => id !== req.userData._id);
+    card.likes = cardFiltered;
+    card = await card.save();
+    return res.send(card);
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 });
 
@@ -142,7 +162,6 @@ router.delete(
   permissionsMiddleware(false, true, true),
   async (req, res) => {
     try {
-      //! joi validation
       await idUserValidation(req.params.id);
 
       const cardFromDB = await cardsServiceModel.deleteCard(req.params.id);

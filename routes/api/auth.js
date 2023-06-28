@@ -12,52 +12,41 @@ const { generateToken } = require("../../utils/token/tokenService");
 const CustomError = require("../../utils/CustomError");
 const authmw = require("../../middleware/authMiddleware");
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
-const { getGoogleAuthUrl, getGoogleUser } = require("./google-auth");
+//const { getGoogleAuthUrl, getGoogleUser } = require("./google-auth");
+
+//סעיף 1
 //register
 //http://localhost:8181/api/auth/users
 router.post("/users", async (req, res) => {
   try {
-    /*
-     * joi
-     * email unique - mongoose -> mongo
-     * encrypt the password
-     * normalize
-     * create user
-     * response user created
-     */
     await registerUserValidation(req.body);
     req.body.password = await hashService.generateHash(req.body.password);
     req.body = normalizeUser(req.body);
     await usersServiceModel.registerUser(req.body);
     res.json({ msg: "register" });
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 });
 
-router.get("/auth/google", (req, res) => {
-  const authUrl = getGoogleAuthUrl();
-  res.redirect(authUrl);
-});
+// router.get("/auth/google", (req, res) => {
+//   const authUrl = getGoogleAuthUrl();
+//   res.redirect(authUrl);
+// });
 
-router.get("/auth/google/callback", async (req, res) => {
-  const code = req.query.code;
-  const user = await getGoogleUser(code);
-  await usersServiceModel.registerUser(user);
+// router.get("/auth/google/callback", async (req, res) => {
+//   const code = req.query.code;
+//   const user = await getGoogleUser(code);
+//   await usersServiceModel.registerUser(user);
 
-  // TODO: Handle user authentication and redirect to your app
-});
+//   // TODO: Handle user authentication and redirect to your app
+// });
 
+//סעיף 2
 //http://localhost:8181/api/auth/users/login
 router.post("/users/login", async (req, res) => {
   try {
-    /**
-     * *joi
-     * *get user from database
-     * *check password
-     * *create token
-     * *send to user
-     */
     await loginUserValidation(req.body);
     const userData = await usersServiceModel.getUserByEmail(req.body.email);
     if (!userData) throw new CustomError("invalid email and/or password");
@@ -77,6 +66,8 @@ router.post("/users/login", async (req, res) => {
     res.status(400).json(err);
   }
 });
+
+//סעיף 3
 //get all users,admin
 //http://localhost:8181/api/auth/users
 router.get(
@@ -93,6 +84,7 @@ router.get(
   }
 );
 
+//סעיף 4
 //Get user,The registered user or admin
 //http://localhost:8181/api/auth/users/:id
 router.get(
@@ -101,9 +93,6 @@ router.get(
   permissionsMiddlewareUser(false, true, true),
   async (req, res) => {
     try {
-      /*
-       * joi
-       */
       await idUserValidation(req.params.id);
       const userData = await usersServiceModel.getUserdById(req.params.id);
       res.json(userData);
@@ -112,6 +101,8 @@ router.get(
     }
   }
 );
+
+//סעיף 5
 //Edit user
 //http://localhost:8181/api/auth/users/:id
 router.put(
@@ -124,14 +115,18 @@ router.put(
       await registerUserValidation(req.body);
       req.body.password = await hashService.generateHash(req.body.password);
       req.body = normalizeUser(req.body);
-      await usersServiceModel.registerUser(req.body);
-      res.json({ msg: "Editing was done successfully" });
+      const userUpdate = await usersServiceModel.updateUser(
+        req.params.id,
+        req.body
+      );
+      res.json(userUpdate);
     } catch (err) {
       res.status(400).json(err);
     }
   }
 );
 
+//סעיף 6
 //Edit is biz user
 //http://localhost:8181/api/auth/users/:id
 router.patch(
@@ -167,6 +162,7 @@ router.patch(
   }
 );
 
+//סעיף 7
 //delete
 //http://localhost:8181/api/auth/users/:id
 router.delete(
@@ -179,8 +175,8 @@ router.delete(
       // req.body.password = await hashService.generateHash(req.body.password);
       // req.body = normalizeUser(req.body);
       await idUserValidation(req.params.id);
-      await usersServiceModel.deleteUser(req.body);
-      res.json({ msg: "deleted user" });
+      const deletedUser = await usersServiceModel.deleteUser(req.params.id);
+      res.json(deletedUser);
     } catch (err) {
       res.status(400).json(err);
     }
