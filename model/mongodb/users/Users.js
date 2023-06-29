@@ -33,6 +33,8 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  timeStamps: { type: Number, default: 0, required: true },
+  blockedUntil: { type: Number, default: 0, required: true },
 });
 
 const User = mongoose.model("users", schema);

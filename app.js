@@ -8,6 +8,7 @@ const config = require("config");
 const initialData = require("./initialData/initialData");
 const chalk = require("chalk");
 const morgan = require("morgan");
+const fs = require("fs");
 
 const app = express();
 
@@ -42,6 +43,21 @@ app.use(
     )} ${method} ${url} ${statusText} ${color(`${responseTime}ms`)}`;
   })
 );
+// app.use((req, res, next) => {
+//   if (res.status > 399) {
+//     return;
+//   } else {
+//     const date = Date.now() + ".txt";
+//     console.log(date);
+// fs.writeFile("`${date}`.txt", { morgan }, (err) => {
+//   if (err) {
+//     console.error("Error creating file:", err);
+//   } else {
+//     console.log("File created successfully.");
+//   }
+//});
+//   }
+// });
 // app.use(
 //   logger((tokens, req, res) => {
 //     return [

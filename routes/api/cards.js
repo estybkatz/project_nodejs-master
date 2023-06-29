@@ -136,7 +136,7 @@ router.put(
         );
         res.json(cardFromDB);
       } else {
-        throw new CustomError("The number is not available");
+        throw new CustomError("The number is in use");
       }
     } catch (err) {
       res.status(400).json(err);

@@ -54,14 +54,45 @@ router.post("/users/login", async (req, res) => {
       req.body.password,
       userData.password
     );
-    if (!isPasswordMatch)
-      throw new CustomError("invalid email and/or password");
-    const token = await generateToken({
-      _id: userData._id,
-      isAdmin: userData.isAdmin,
-      isBusiness: userData.isBusiness,
-    });
-    res.json({ token });
+    let dateNow = Date.now();
+    console.log("datenow", dateNow);
+    console.log("blockeduntil", userData.blockedUntil);
+    if (dateNow < userData.blockedUntil) {
+      throw new CustomError("your password blocked for 24 hour");
+    } else {
+      if (!isPasswordMatch) {
+        let timeStampsToUpdate = userData.timeStamps;
+        console.log(timeStampsToUpdate);
+        timeStampsToUpdate++;
+        console.log(timeStampsToUpdate);
+        userData.timeStamps = timeStampsToUpdate;
+        console.log(userData.timeStamps);
+        if (timeStampsToUpdate < 3) {
+          userData.save();
+          throw new CustomError("invalid email and/or password");
+        } else {
+          console.log("here");
+
+          console.log(dateNow);
+          const blockDuration = 24 * 60 * 60 * 1000;
+          let blockedUntil = dateNow + blockDuration;
+          userData.blockedUntil = blockedUntil;
+          userData.timeStamps = 0;
+          userData.save();
+          throw new CustomError(
+            "invalid password. You are blocked for 24 hours after 3 unsuccessful login attempts"
+          );
+        }
+        //  userData.save();
+      } else {
+        const token = await generateToken({
+          _id: userData._id,
+          isAdmin: userData.isAdmin,
+          isBusiness: userData.isBusiness,
+        });
+        res.json({ token });
+      }
+    }
   } catch (err) {
     res.status(400).json(err);
   }
@@ -95,6 +126,7 @@ router.get(
     try {
       await idUserValidation(req.params.id);
       const userData = await usersServiceModel.getUserdById(req.params.id);
+
       res.json(userData);
     } catch (err) {
       res.status(400).json(err);
@@ -115,6 +147,12 @@ router.put(
       await registerUserValidation(req.body);
       req.body.password = await hashService.generateHash(req.body.password);
       req.body = normalizeUser(req.body);
+      if (req.body.timeStamps) {
+        throw new CustomError("you are not allowed to edit timeStamps");
+      }
+      if (req.body.password) {
+        throw new CustomError("you are not allowed to edit password");
+      }
       const userUpdate = await usersServiceModel.updateUser(
         req.params.id,
         req.body

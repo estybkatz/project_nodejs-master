@@ -26,6 +26,10 @@ const updateUser = (id, userToUpdate) => {
 const deleteUser = (id) => {
   return User.findByIdAndDelete(id);
 };
+
+const updateTimeStamps = (id) => {
+  return User.updateTimeStamps(id);
+};
 module.exports = {
   registerUser,
   getUserByEmail,
