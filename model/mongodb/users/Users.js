@@ -35,8 +35,8 @@ const schema = new mongoose.Schema({
   },
   timeStamps: { type: Number, default: 0, required: true },
   blockedUntil: { type: Number, default: 0, required: true },
+  triesTimes: { type: [Number], default: [0, 0], required: true },
 });
-
 const User = mongoose.model("users", schema);
 
 module.exports = User;

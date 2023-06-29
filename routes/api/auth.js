@@ -12,6 +12,7 @@ const { generateToken } = require("../../utils/token/tokenService");
 const CustomError = require("../../utils/CustomError");
 const authmw = require("../../middleware/authMiddleware");
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
+const { logErrorToFile } = require("../../utils/fileLogger");
 //const { getGoogleAuthUrl, getGoogleUser } = require("./google-auth");
 
 //סעיף 1
@@ -26,6 +27,7 @@ router.post("/users", async (req, res) => {
     res.json({ msg: "register" });
   } catch (err) {
     console.log(err);
+    logErrorToFile(err, 400);
     res.status(400).json(err);
   }
 });
@@ -48,6 +50,7 @@ router.post("/users", async (req, res) => {
 router.post("/users/login", async (req, res) => {
   try {
     await loginUserValidation(req.body);
+
     const userData = await usersServiceModel.getUserByEmail(req.body.email);
     if (!userData) throw new CustomError("invalid email and/or password");
     const isPasswordMatch = await hashService.cmpHash(
@@ -55,6 +58,7 @@ router.post("/users/login", async (req, res) => {
       userData.password
     );
     let dateNow = Date.now();
+    const blockDuration = 24 * 60 * 60 * 1000;
     console.log("datenow", dateNow);
     console.log("blockeduntil", userData.blockedUntil);
     if (dateNow < userData.blockedUntil) {
@@ -74,7 +78,6 @@ router.post("/users/login", async (req, res) => {
           console.log("here");
 
           console.log(dateNow);
-          const blockDuration = 24 * 60 * 60 * 1000;
           let blockedUntil = dateNow + blockDuration;
           userData.blockedUntil = blockedUntil;
           userData.timeStamps = 0;
@@ -94,6 +97,7 @@ router.post("/users/login", async (req, res) => {
       }
     }
   } catch (err) {
+    logErrorToFile(err.name, err.code);
     res.status(400).json(err);
   }
 });
@@ -179,11 +183,11 @@ router.patch(
       if (userData.isBusiness === true) {
         userData.isBusiness = false;
         userData = await userData.save();
-        res.json({ msg: "Editing was done false successfully" });
+        res.status(200).json({ msg: "Editing was done false successfully" });
       } else {
         userData.isBusiness = true;
         userData = await userData.save();
-        res.json({ msg: "Editing was done true successfully" });
+        res.status(200).json({ msg: "Editing was done true successfully" });
       }
     } catch (err) {
       res.status(400).json(err);
@@ -204,10 +208,15 @@ router.delete(
       // req.body.password = await hashService.generateHash(req.body.password);
       // req.body = normalizeUser(req.body);
       await idUserValidation(req.params.id);
+      const userToDelete = await usersServiceModel.getUserdById(req.params.id);
       const deletedUser = await usersServiceModel.deleteUser(req.params.id);
       res.json(deletedUser);
     } catch (err) {
-      res.status(400).json(err);
+      if (userToDelete && deletedUser === null) {
+        res.status(500).json(err);
+      } else {
+        res.status(400).json(err);
+      }
     }
   }
 );

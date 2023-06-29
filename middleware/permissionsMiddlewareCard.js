@@ -1,5 +1,6 @@
 const CustomError = require("../utils/CustomError");
 const { getCardById } = require("../model/cardsService/cardsService");
+const { logErrorToFile } = require("../utils/fileLogger");
 /*
     TODO:
         finish isBizSpecific
@@ -15,10 +16,12 @@ const checkIfOwner = async (iduser, idcard, res, next) => {
     if (cardData.user_id == iduser) {
       next();
     } else {
+      logErrorToFile("you are not the owner", 401);
       res.status(401).json({ msg: "you are not the  owner" });
       console.log(iduser, idcard);
     }
   } catch (err) {
+    logErrorToFile(err.message, 400);
     res.status(400).json(err);
   }
 };
