@@ -1,5 +1,6 @@
 const { verifyToken } = require("../utils/token/tokenService");
 const CustomError = require("../utils/CustomError");
+const { logErrorToFile } = require("../utils/fileLogger");
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -8,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const userData = await verifyToken(req.headers["x-auth-token"]);
-    console.log(userData);
+    // console.log(userData);
     req.userData = userData;
 
     next();
@@ -19,6 +20,8 @@ const authMiddleware = async (req, res, next) => {
     } else {
       errToSend = new CustomError("invalid token");
     }
+    logErrorToFile(errToSend.msg, 401);
+
     res.status(401).json(errToSend);
   }
 };

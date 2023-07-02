@@ -2,6 +2,7 @@ const CustomError = require("../utils/CustomError");
 const { getUserdById } = require("../model/usersService/usersService");
 const { verifyToken } = require("../utils/token/jwt");
 const jwt = require("jsonwebtoken");
+const { logErrorToFile } = require("../utils/fileLogger");
 //const checkIfOwner = async (req, res, next, iduser) => {
 //   try {
 //     // ! joi the iduser
@@ -32,6 +33,7 @@ const jwt = require("jsonwebtoken");
 const permissionsMiddlewareUser = (isBiz, isAdmin, isOwner) => {
   return (req, res, next) => {
     if (!req.userData) {
+      logErrorToFile("did not provide userData", 400);
       throw new CustomError("must provide userData");
     }
     if (isBiz === req.userData.isBusiness && isBiz === true) {
@@ -50,9 +52,13 @@ const permissionsMiddlewareUser = (isBiz, isAdmin, isOwner) => {
       //return checkIfOwner(req, res, next, req.params.id);
     }
 
+    logErrorToFile(
+      "you do not have sufficient permissions for this action",
+      403
+    );
     res
-      .status(401)
-      .json({ msg: "you not allowed to edit this user usermiddleware" });
+      .status(403)
+      .json({ msg: "you do not have sufficient permissions for this action" });
   };
 };
 

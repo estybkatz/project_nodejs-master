@@ -13,7 +13,6 @@ const CustomError = require("../../utils/CustomError");
 const authmw = require("../../middleware/authMiddleware");
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
 const { logErrorToFile } = require("../../utils/fileLogger");
-//const { getGoogleAuthUrl, getGoogleUser } = require("./google-auth");
 
 //סעיף 1
 //register
@@ -24,69 +23,46 @@ router.post("/users", async (req, res) => {
     req.body.password = await hashService.generateHash(req.body.password);
     req.body = normalizeUser(req.body);
     await usersServiceModel.registerUser(req.body);
-    res.json({ msg: "register" });
+    res.json({ msg: "register success" });
   } catch (err) {
-    console.log(err);
     logErrorToFile(err, 400);
     res.status(400).json(err);
   }
 });
 
-// router.get("/auth/google", (req, res) => {
-//   const authUrl = getGoogleAuthUrl();
-//   res.redirect(authUrl);
-// });
-
-// router.get("/auth/google/callback", async (req, res) => {
-//   const code = req.query.code;
-//   const user = await getGoogleUser(code);
-//   await usersServiceModel.registerUser(user);
-
-//   // TODO: Handle user authentication and redirect to your app
-// });
-
 //סעיף 2
 //http://localhost:8181/api/auth/users/login
 router.post("/users/login", async (req, res) => {
+  let num = 401;
   try {
     await loginUserValidation(req.body);
-
     const userData = await usersServiceModel.getUserByEmail(req.body.email);
-    if (!userData) throw new CustomError("invalid email and/or password");
+    if (!userData) throw new CustomError("User does not exists");
+
     const isPasswordMatch = await hashService.cmpHash(
       req.body.password,
       userData.password
     );
     let dateNow = Date.now();
     const blockDuration = 24 * 60 * 60 * 1000;
-    console.log("datenow", dateNow);
-    console.log("blockeduntil", userData.blockedUntil);
     if (dateNow < userData.blockedUntil) {
       throw new CustomError("your password blocked for 24 hour");
     } else {
       if (!isPasswordMatch) {
         let timeStampsToUpdate = userData.timeStamps;
-        console.log(timeStampsToUpdate);
         timeStampsToUpdate++;
-        console.log(timeStampsToUpdate);
         userData.timeStamps = timeStampsToUpdate;
-        console.log(userData.timeStamps);
         if (timeStampsToUpdate < 3) {
           userData.save();
           throw new CustomError("invalid email and/or password");
         } else {
-          console.log("here");
-
-          console.log(dateNow);
           let blockedUntil = dateNow + blockDuration;
           userData.blockedUntil = blockedUntil;
           userData.timeStamps = 0;
-          userData.save();
           throw new CustomError(
             "invalid password. You are blocked for 24 hours after 3 unsuccessful login attempts"
           );
         }
-        //  userData.save();
       } else {
         const token = await generateToken({
           _id: userData._id,
@@ -97,8 +73,9 @@ router.post("/users/login", async (req, res) => {
       }
     }
   } catch (err) {
-    logErrorToFile(err.name, err.code);
-    res.status(400).json(err);
+    if (err instanceof CustomError) logErrorToFile(err.msg, num);
+    else logErrorToFile(err, num);
+    res.status(num).json(err);
   }
 });
 
@@ -114,7 +91,8 @@ router.get(
       const userData = await usersServiceModel.getAllUsers();
       res.json(userData);
     } catch (err) {
-      res.status(400).json(err);
+      logErrorToFile(err, 500);
+      res.status(500).json(err);
     }
   }
 );
@@ -130,9 +108,13 @@ router.get(
     try {
       await idUserValidation(req.params.id);
       const userData = await usersServiceModel.getUserdById(req.params.id);
-
+      if (!userData) {
+        throw new CustomError("user does not exist");
+      }
       res.json(userData);
     } catch (err) {
+      if (err instanceof CustomError) logErrorToFile(err.msg, 400);
+      else logErrorToFile(err, 400);
       res.status(400).json(err);
     }
   }
@@ -146,24 +128,30 @@ router.put(
   authmw,
   permissionsMiddlewareUser(false, false, true),
   async (req, res) => {
+    let num = 400;
     try {
-      await idUserValidation(req.params.id);
-      await registerUserValidation(req.body);
+      id = await idUserValidation(req.params.id);
+      registered = await registerUserValidation(req.body);
+      num = 500;
       req.body.password = await hashService.generateHash(req.body.password);
+      if (req.body.password) num = 400;
       req.body = normalizeUser(req.body);
-      if (req.body.timeStamps) {
-        throw new CustomError("you are not allowed to edit timeStamps");
+      if (req.body.timeStamps || req.body.blockedUntil) {
+        num = 403;
+        throw new CustomError(
+          "you are not allowed to edit timeStamps or blockedUntil"
+        );
       }
-      if (req.body.password) {
-        throw new CustomError("you are not allowed to edit password");
-      }
+      num = 500;
       const userUpdate = await usersServiceModel.updateUser(
         req.params.id,
         req.body
       );
       res.json(userUpdate);
     } catch (err) {
-      res.status(400).json(err);
+      if (err instanceof CustomError) logErrorToFile(err.msg, num);
+      else logErrorToFile(err, num);
+      res.status(num).json(err);
     }
   }
 );
@@ -190,6 +178,7 @@ router.patch(
         res.status(200).json({ msg: "Editing was done true successfully" });
       }
     } catch (err) {
+      logErrorToFile(err, 400);
       res.status(400).json(err);
     }
   }
@@ -204,19 +193,15 @@ router.delete(
   permissionsMiddlewareUser(false, true, true),
   async (req, res) => {
     try {
-      // await registerUserValidation(req.body);
-      // req.body.password = await hashService.generateHash(req.body.password);
-      // req.body = normalizeUser(req.body);
       await idUserValidation(req.params.id);
       const userToDelete = await usersServiceModel.getUserdById(req.params.id);
       const deletedUser = await usersServiceModel.deleteUser(req.params.id);
       res.json(deletedUser);
     } catch (err) {
-      if (userToDelete && deletedUser === null) {
-        res.status(500).json(err);
-      } else {
-        res.status(400).json(err);
-      }
+      let num = 400;
+      if (userToDelete && deletedUser === null) num = 500;
+      logErrorToFile(err, num);
+      res.status(num).json(err);
     }
   }
 );

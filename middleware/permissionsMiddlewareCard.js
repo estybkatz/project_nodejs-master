@@ -21,7 +21,7 @@ const checkIfOwner = async (iduser, idcard, res, next) => {
       console.log(iduser, idcard);
     }
   } catch (err) {
-    logErrorToFile(err.message, 400);
+    logErrorToFile(err, 400);
     res.status(400).json(err);
   }
 };
@@ -34,8 +34,10 @@ const checkIfOwner = async (iduser, idcard, res, next) => {
 
 const permissionsMiddleware = (isBiz, isAdmin, isOwner) => {
   return (req, res, next) => {
-    console.log(req.userData, isBiz, isAdmin, isOwner);
+    //console.log(req.userData, isBiz, isAdmin, isOwner);
     if (!req.userData) {
+      logErrorToFile("must provide userData", 401);
+
       throw new CustomError("must provide userData");
     }
     if (isBiz === req.userData.isBusiness && isBiz === true) {
@@ -47,8 +49,8 @@ const permissionsMiddleware = (isBiz, isAdmin, isOwner) => {
     if (isOwner === true) {
       return checkIfOwner(req.userData._id, req.params.id, res, next);
     }
-
-    res.status(401).json({ msg: "you not allowed to edit or create" });
+    logErrorToFile("you not allowed to edit or create", 403);
+    res.status(403).json({ msg: "you not allowed to edit or create" });
   };
 };
 

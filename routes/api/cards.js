@@ -8,6 +8,7 @@ const authmw = require("../../middleware/authMiddleware");
 const CustomError = require("../../utils/CustomError");
 const { getUserdById } = "../../model/usersService/usersService";
 const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
+const { logErrorToFile } = require("../../utils/fileLogger");
 
 //סעיף 1
 // get all cards all
@@ -17,6 +18,7 @@ router.get("/", async (req, res) => {
     const allCards = await cardsServiceModel.getAllCards();
     res.json(allCards);
   } catch (err) {
+    logErrorToFile(err.msg, 400);
     res.status(400).json(err);
   }
 });
@@ -31,10 +33,13 @@ router.get(
     try {
       const Cards = await cardsServiceModel.getAllCards();
       const myCards = Cards.filter((card) => card.user_id == req.userData._id);
-
-      res.json(myCards);
+      if (myCards.length) res.json(myCards);
+      else {
+        res.status(200).json("You do not have cards");
+      }
     } catch (err) {
       console.log("err", err);
+      logErrorToFile(err.msg, 400);
       res.status(400).json(err);
     }
   }
@@ -58,8 +63,11 @@ router.get("/:id", async (req, res) => {
   try {
     await cardsValidationService.idUserValidation(req.params.id);
     const cardFromDB = await cardsServiceModel.getCardById(req.params.id);
+    if (!cardFromDB) throw new CustomError("There exists no card with the id");
     res.json(cardFromDB);
   } catch (err) {
+    if (err instanceof CustomError) logErrorToFile(err.msg, 400);
+    else logErrorToFile(err, 400);
     res.status(400).json(err);
   }
 });
@@ -74,11 +82,16 @@ router.post(
   async (req, res) => {
     try {
       await cardsValidationService.createCardValidation(req.body);
+      console.log("tarnegool");
       let normalCard = await normalizeCard(req.body, req.userData._id);
+      console.log("kara bekol gadol");
+      //console.log(normalCard);
       const dataFromMongoose = await cardsServiceModel.createCard(normalCard);
+      console.log("boker tov");
       console.log("dataFromMongoose", dataFromMongoose);
       res.json({ msg: "ok" });
     } catch (err) {
+      logErrorToFile(err, 400);
       res.status(400).json(err);
     }
   }
@@ -109,6 +122,8 @@ router.put(
       );
       res.json(cardFromDB);
     } catch (err) {
+      if (err instanceof CustomError) logErrorToFile(err.msg, 400);
+      else logErrorToFile(err, 400);
       res.status(400).json(err);
     }
   }
@@ -139,6 +154,8 @@ router.put(
         throw new CustomError("The number is in use");
       }
     } catch (err) {
+      if (err instanceof CustomError) logErrorToFile(err.msg, 400);
+      else logErrorToFile(err, 400);
       res.status(400).json(err);
     }
   }
@@ -185,7 +202,8 @@ router.patch("/:id", authmw, async (req, res) => {
     card = await card.save();
     return res.send(card);
   } catch (error) {
-    return res.status(500).send(error.message);
+    logErrorToFile(err.msg, 500);
+    return res.status(500).send(error);
   }
 });
 
@@ -197,8 +215,9 @@ router.delete(
   permissionsMiddleware(false, true, true),
   async (req, res) => {
     try {
+      let num = 400;
       await idUserValidation(req.params.id);
-
+      num = 500;
       const cardFromDB = await cardsServiceModel.deleteCard(req.params.id);
       if (cardFromDB) {
         res.json({ msg: "card deleted" });
@@ -206,7 +225,8 @@ router.delete(
         res.json({ msg: "could not find the card" });
       }
     } catch (err) {
-      res.status(400).json(err);
+      logErrorToFile(err, 500);
+      res.status(500).json(err);
     }
   }
 );

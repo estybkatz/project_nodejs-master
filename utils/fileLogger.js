@@ -8,16 +8,13 @@ function logErrorToFile(error, statusCode) {
   const logFileName = `${year}-${month}-${day}.log`;
   //console.log(error);
   // Format the error details
-  const errorDetails = `Timestamp: ${today.toISOString()}\nStatus Code: ${statusCode}\nError: ${
-    error.msg
-  }\n\n`;
+  const errorDetails = `Timestamp: ${today.toISOString()}\nStatus Code: ${statusCode}\nError: ${error}\n\n`;
 
   // Append the error details to the log file
   fs.appendFile(logFileName, errorDetails, (err) => {
     if (err) {
       console.error("Error writing to log file:", err);
     } else {
-      console.log("error - error details", error.name);
       console.log("Error logged to file:", logFileName);
     }
   });

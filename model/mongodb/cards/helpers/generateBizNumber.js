@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const Card = require("../Card");
+const { logErrorToFile } = require("../../../../utils/fileLogger");
 
 const generateBizNumber = async () => {
   try {
@@ -15,6 +16,7 @@ const generateBizNumber = async () => {
     }
     return null;
   } catch (err) {
+    logErrorToFile(err, 500);
     return Promise.reject(err);
   }
 };

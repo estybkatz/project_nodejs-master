@@ -39,7 +39,7 @@ app.use(
     const method = tokens.method(req, res);
     const url = tokens.url(req, res);
     const responseTime = tokens["response-time"](req, res);
-    console.log(res);
+    //console.log(res);
     return `${chalk.gray(
       tokens.date(req, res, "iso")
     )} ${method} ${url} ${statusText} ${color(`${responseTime}ms`)}`;

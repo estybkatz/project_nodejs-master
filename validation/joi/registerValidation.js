@@ -13,7 +13,7 @@ const registerSchema = Joi.object({
     .required()
     .messages({
       "string.pattern.base":
-        "The phone number must start with 0 and contain only numbers. You can put - after the third digit",
+        "The phone number must start with 0 and contain only numbers. You can put - after the third digit and it must contain 7-12 digits",
     }),
   email: Joi.string()
     .regex(
@@ -33,7 +33,7 @@ const registerSchema = Joi.object({
     .required()
     .messages({
       "string.pattern.base":
-        "the password should be supper protected, this mean that its should contain only upper and lower case latter's",
+        "the password should be supper protected, this mean that its must contain an uppercase letter and a lowercase letter, and a number, and must be atleast of size 8",
     }),
   image: Joi.object()
     .keys({

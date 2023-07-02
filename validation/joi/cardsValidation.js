@@ -6,12 +6,20 @@ const createCardSchema = Joi.object({
   description: Joi.string().min(2).max(1024).required(),
   phone: Joi.string()
     .regex(new RegExp(/0[0-9]{1,2}\-?\s?[0-9]{3}\s?[0-9]{4}/))
-    .required(),
+    .required()
+    .messages({
+      "string.pattern.base":
+        "The phone number must start with 0 and contain only numbers. You can put - after the third digit, and it must contain 7-12 digits",
+    }),
   email: Joi.string()
     .regex(
       new RegExp(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
     )
-    .required(),
+    .required()
+    .messages({
+      "string.pattern.base":
+        "The email structure is incorrect, the email must contain English letters and @ for example A@gmail.com",
+    }),
   web: Joi.string()
     .regex(
       new RegExp(
@@ -19,7 +27,11 @@ const createCardSchema = Joi.object({
       )
     )
     .allow("")
-    .required(),
+    .required()
+    .messages({
+      "string.pattern.base":
+        "The address must start with http// and contain letters and numbers",
+    }),
   image: Joi.object()
     .keys({
       url: Joi.string()
@@ -29,7 +41,11 @@ const createCardSchema = Joi.object({
           )
         )
         .allow("")
-        .required(),
+        .required()
+        .messages({
+          "string.pattern.base":
+            "The address must start with http// and contain letters and numbers",
+        }),
       alt: Joi.string().min(2).max(256).allow("").required(),
     })
     .required(),
