@@ -12,7 +12,7 @@ const connectToDBService = require("../model/connectToDBService");
 
 connectToDBService()
   .then(() => {
-    console.log(chalk.cyan.bold("connected to mongo"));
+    console.log(chalk.cyan.bold("connected to mongo!"));
   })
   .catch((err) => {
     console.log(chalk.redBright.bold(err));

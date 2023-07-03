@@ -1,24 +1,20 @@
 const CustomError = require("../utils/CustomError");
 const { getCardById } = require("../model/cardsService/cardsService");
 const { logErrorToFile } = require("../utils/fileLogger");
-/*
-    TODO:
-        finish isBizSpecific
-*/
-
+const joiValidation = require("../validation/joi/idValidation");
 const checkIfOwner = async (iduser, idcard, res, next) => {
   try {
-    //! joi the idcard
+    await joiValidation.validateIdSchema(idcard);
     const cardData = await getCardById(idcard);
     if (!cardData) {
-      return res.status(400).json({ msg: "card not found" });
+      logErrorToFile("card not found", 404);
+      return res.status(404).json({ msg: "card not found" });
     }
     if (cardData.user_id == iduser) {
       next();
     } else {
       logErrorToFile("you are not the owner", 401);
       res.status(401).json({ msg: "you are not the  owner" });
-      console.log(iduser, idcard);
     }
   } catch (err) {
     logErrorToFile(err, 400);
@@ -34,10 +30,8 @@ const checkIfOwner = async (iduser, idcard, res, next) => {
 
 const permissionsMiddleware = (isBiz, isAdmin, isOwner) => {
   return (req, res, next) => {
-    //console.log(req.userData, isBiz, isAdmin, isOwner);
-    if (!req.userData) {
+    if (!req.userData.isBusiness) {
       logErrorToFile("must provide userData", 401);
-
       throw new CustomError("must provide userData");
     }
     if (isBiz === req.userData.isBusiness && isBiz === true) {

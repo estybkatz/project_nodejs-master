@@ -6,8 +6,6 @@ const cardsValidationService = require("../../validation/cardsValidationService"
 const permissionsMiddleware = require("../../middleware/permissionsMiddlewareCard");
 const authmw = require("../../middleware/authMiddleware");
 const CustomError = require("../../utils/CustomError");
-const { getUserdById } = "../../model/usersService/usersService";
-const permissionsMiddlewareUser = require("../../middleware/permissionsMiddlewareUser");
 const { logErrorToFile } = require("../../utils/fileLogger");
 
 //סעיף 1
@@ -38,7 +36,6 @@ router.get(
         res.status(200).json("You do not have cards");
       }
     } catch (err) {
-      console.log("err", err);
       logErrorToFile(err.msg, 400);
       res.status(400).json(err);
     }
@@ -71,13 +68,9 @@ router.post(
   async (req, res) => {
     try {
       await cardsValidationService.createCardValidation(req.body);
-      console.log("tarnegool");
       let normalCard = await normalizeCard(req.body, req.userData._id);
-      console.log("kara bekol gadol");
-      //console.log(normalCard);
       const dataFromMongoose = await cardsServiceModel.createCard(normalCard);
-      console.log("boker tov");
-      console.log("dataFromMongoose", dataFromMongoose);
+
       res.json({ msg: "ok" });
     } catch (err) {
       logErrorToFile(err, 400);

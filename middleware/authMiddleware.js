@@ -9,7 +9,6 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const userData = await verifyToken(req.headers["x-auth-token"]);
-    // console.log(userData);
     req.userData = userData;
 
     next();

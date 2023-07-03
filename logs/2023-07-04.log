@@ -1,0 +1,12 @@
+Timestamp: 2023-07-03T22:27:55.256Z
+Status Code: 404
+Error: card not found
+
+Timestamp: 2023-07-03T22:28:14.598Z
+Status Code: 400
+Error: ValidationError: "value" length must be 24 characters long
+
+Timestamp: 2023-07-03T22:28:44.828Z
+Status Code: 400
+Error: ValidationError: "value" length must be 24 characters long
+

@@ -2,7 +2,6 @@ const Card = require("./Card");
 
 const createCard = (cardToSave) => {
   let card = new Card(cardToSave);
-  console.log(card.isNew);
   return card.save();
 };
 
