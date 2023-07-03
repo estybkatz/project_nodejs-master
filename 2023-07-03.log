@@ -134,3 +134,63 @@ Timestamp: 2023-07-02T21:29:28.952Z
 Status Code: 400
 Error: MongoServerError: E11000 duplicate key error collection: bizcarddb.cards index: email_1 dup key: { email: "yasser1121@gmail.com" }
 
+Timestamp: 2023-07-03T06:13:53.218Z
+Status Code: 400
+Error: ValidationError: "title" is required. "subTitle" is required. "description" is required. "phone" is required. "email" is required. "web" is required. "image" is required. "address" is required
+
+Timestamp: 2023-07-03T06:17:41.799Z
+Status Code: 400
+Error: ValidationError: "image" is required. "address" is required
+
+Timestamp: 2023-07-03T06:20:13.019Z
+Status Code: 400
+Error: ValidationError: "address.country" is required. "address.city" is not allowed to be empty. "address.street" is not allowed to be empty. "address.houseNumber" must be a number. "address.zip" is required. "address.counrty" is not allowed
+
+Timestamp: 2023-07-03T06:20:43.562Z
+Status Code: 400
+Error: ValidationError: "address.country" is not allowed to be empty. "address.city" is not allowed to be empty. "address.street" is not allowed to be empty. "address.houseNumber" must be a number. "address.zip" is required
+
+Timestamp: 2023-07-03T06:21:12.081Z
+Status Code: 400
+Error: ValidationError: "address.houseNumber" must be a number. "address.zip" is required
+
+Timestamp: 2023-07-03T06:21:45.673Z
+Status Code: 400
+Error: ValidationError: "address.zip" must be a number
+
+Timestamp: 2023-07-03T06:23:14.658Z
+Status Code: 401
+Error: you are not the owner
+
+Timestamp: 2023-07-03T06:24:15.182Z
+Status Code: 401
+Error: you are not the owner
+
+Timestamp: 2023-07-03T06:24:17.369Z
+Status Code: 401
+Error: you are not the owner
+
+Timestamp: 2023-07-03T06:47:33.654Z
+Status Code: 500
+Error: ReferenceError: idUserValidation is not defined
+
+Timestamp: 2023-07-03T06:47:36.434Z
+Status Code: 500
+Error: ReferenceError: idUserValidation is not defined
+
+Timestamp: 2023-07-03T06:51:02.093Z
+Status Code: 500
+Error: ValidationError: "value" length must be 24 characters long
+
+Timestamp: 2023-07-03T06:51:15.769Z
+Status Code: 500
+Error: ValidationError: "value" length must be 24 characters long
+
+Timestamp: 2023-07-03T06:51:48.284Z
+Status Code: 500
+Error: ValidationError: "value" length must be 24 characters long
+
+Timestamp: 2023-07-03T06:54:11.568Z
+Status Code: 401
+Error: you are not the owner
+

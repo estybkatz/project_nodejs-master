@@ -37,207 +37,58 @@ And if there are no login errors you should see the message painted in cyan:
 
 ### Available Routes
 
-### User
+### User:
 
 #### Register a new user
 
 POST /http://localhost:8181/api/auth/users
 
-request:
-
-- firstName:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-- middleName:
-  -- string
-  -- min 2
-  -- max 256
-- lastName:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-- phone:
-  -- string
-  -- required
-  -- min 9
-  -- max 14
-- email:
-  -- string
-  -- required
-  -- must be email
-  -- min 6
-  -- max 256
-- password:
-  -- string
-  -- required
-  -- min 6
-  -- max 1024
-- imageUrl:
-  -- string
-  -- min 6
-  -- max 1024
-- imageAlt:
-  -- string
-  -- min 6
-  -- max 256
-- state:
-  -- string
-  -- min 2
-  -- max 256
-- country:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-- city:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-- street:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-- houseNumber:
-  -- string
-  -- required
-  -- min 1
-  -- max 256
-- zip:
-  -- number
-  -- min 1
-  -- max 99999999
-- biz:
-  -- boolean
-  -- true/false
-  
 #### Login a user
 
 POST /http://localhost:8181/api/auth/users/login
 
-request:
+#### Get all users
 
-- email:
-  -- string
-  -- required
-  -- must be email
-  -- min 6
-  -- max 256
-- password:
-  -- string
-  -- required
-  -- min 6
-  -- max 1024
-
- #### Get all users
-
- GET /http://localhost:8181/api/auth/users
-
- - must provide token
-  \*\* must be registered as admin
-
-  #### For Information about a user
-
-  GET /http://localhost:8181/api/auth/users/:id
-
-equest:
+GET /http://localhost:8181/api/auth/users
 
 - must provide token
   \*\* must be registered as admin
+
+#### For Information about a user
+
+GET /http://localhost:8181/api/auth/users/:id
+
+request:
+
+- must provide token
+  \*\* must be registered as admin, A business type user will only be able to receive his details
 
 You will need to provide a token to get an answer from this api
 
 #### For User information update/edit
- PUT /http://localhost:8181/api/auth/users/:id
 
-
- request:
+PUT /http://localhost:8181/api/auth/users/:id
 
 - must provide token
-  \*\* must be registered as admin
+  \*\* must be the registered user
 
-* firstName:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* middleName:
-  -- string
-  -- min 2
-  -- max 256
-* lastName:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* phone:
-  -- string
-  -- required
-  -- min 9
-  -- max 14
-* email:
-  -- string
-  -- required
-  -- must be email
-  -- min 6
-  -- max 256
-* imageUrl:
-  -- string
-  -- min 6
-  -- max 1024
-* imageAlt:
-  -- string
-  -- min 6
-  -- max 256
-* state:
-  -- string
-  -- min 2
-  -- max 256
-* country:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* city:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* street:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* houseNumber:
-  -- string
-  -- required
-  -- min 1
-  -- max 256
-* zip:
-  -- number
-  -- min 1
-  -- max 99999999
-* biz:
-  -- boolean
-  -- true/false
-
-You will need to provide a token to get an answer from this api
-or You need to be admin
+You will need to provide a token to get an answer from this api.
 
 ### Change isBusiness status
 
- PATCH /http://localhost:8181/api/auth/users/:id
+PATCH /http://localhost:8181/api/auth/users/:id
 
- must provide token
+- must provide token
+  \*\* must be the registered user
+
+You will need to provide a token to get an answer from this api.
+
 ### Delete user
- DELETE /http://localhost:8181/api/auth/users/:id
 
- - must provide token
-  \*\* must be registered as admin
+DELETE /http://localhost:8181/api/auth/users/:id
+
+- must provide token
+  \*\* must be the user who created the card or to be Admin.
 
 You will need to provide a token to get an answer from this api
 
@@ -245,24 +96,22 @@ You will need to provide a token to get an answer from this api
 
 #### To receive all business cards
 
- GET /http://localhost:8181/api/cards
+GET /http://localhost:8181/api/cards
 
- #### To receive all business cards of the registered user
+#### To receive all business cards of the registered user
 
-
-  GET /http://localhost:8181/api/cards/my-cards
+GET /http://localhost:8181/api/cards/my-cards
 
 - must provide token
   You will need to provide a token to get an answer from this api
 
- #### To get a business card of a specific business
+#### To get a business card of a specific business
 
- GET/ http://localhost:8181/api/cards/:id
+GET/ http://localhost:8181/api/cards/:id
 
- id of the card is required
+id of the card is required
 
- #### To create a new business card
-
+#### To create a new business card
 
 POST /http://localhost:8181/api/cards
 
@@ -271,41 +120,6 @@ request:
 - must provide token
   \*\* must registered as biz user
 
-* title:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* subTitle:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* description:
-  -- string
-  -- required
-  -- min 2
-  -- max 1024
-* state:
-  -- string
-  -- min 2
-  -- max 256
-* country:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* city:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* street:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-
   #### To update a business card
 
 PUT/ http://localhost:8181/api/cards/:id
@@ -313,92 +127,28 @@ PUT/ http://localhost:8181/api/cards/:id
 request:
 
 - must provide token
-  \*\* must registered as biz user or admin user
+  \*\* must be the registered user who created the card.
 
-* title:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* subTitle:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* description:
-  -- string
-  -- required
-  -- min 2
-  -- max 1024
-* state:
-  -- string
-  -- min 2
-  -- max 256
-* country:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* city:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* street:
-  -- string
-  -- required
-  -- min 2
-  -- max 256
-* houseNumber:
-  -- string
-  -- required
-  -- min 1
-  -- max 256
-* zipCode:
-  -- number
-  -- min 1
-  -- max 99999999
-* phone:
-  -- string
-  -- required
-  -- min 9
-  -- max 14
-* email:
-  -- string
-  -- required
-  -- must be email
-  -- min 6
-  -- max 256
-* web:
-  // link to website of the buissness
-  -- string
-  -- min 5
-  -- max 255
-* url:
-  // image with the buissness card
-  -- string
-  -- min 6
-  -- max 1024
-* alt:
-  // image alt
-  -- string
-  -- min 6
-  -- max 256
-  You will need to provide a token to get an answer from this api
+  ### to edit bizNumber
+
+PUT/ http://localhost:8181/api/cards/:id
+request:
+
+- must provide token
+  \*\* must be Admin.
 
   ### To update card like
 
-	PATCH http://localhost:8181/api/cards/like/:id
-
+  PATCH http://localhost:8181/api/cards/:id
 
 - must provide token
+  \*\* must be a registered user.
+  You will need to provide a token to get an answer from this api
 
 #### To delete a business card
 
-  DELETE / http://localhost:8181/api/cards/:id
-
+DELETE / http://localhost:8181/api/cards/:id
 
 - must provide token
-  \*\* must registered as biz user or admin user
+  \*\* must registered the use who created the card or admin user
   You will need to provide a token to get an answer from this api
-

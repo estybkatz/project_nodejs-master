@@ -45,17 +45,6 @@ router.get(
   }
 );
 
-// get one cards, all
-// router.get("/cards/:id", async (req, res) => {
-//   try {
-//     const card = await cardsServiceModel.getCardById(req.params.id);
-//     res.json(card);
-//   } catch (err) {
-//     res.status(400).json(err);
-//   }
-
-//});
-
 //סעיף 3
 // all
 //http://localhost:8181/api/cards/:id
@@ -162,29 +151,6 @@ router.put(
 );
 
 //סעיף 6
-//http://localhost:8181/api/cards/like/:id
-// router.patch("/like/:id", authmw, async (req, res) => {
-//   try {
-//     await cardsValidationService.idUserValidation(req.params.id);
-//     const cardId = req.params.id;
-//     let cardLike = await cardsServiceModel.getCardById(cardId);
-//     if (cardLike.likes.find((userId) => userId == req.userData._id)) {
-//       const cardFiltered = cardLike.likes.filter(
-//         (userId) => userId != req.userData._id
-//       );
-//       cardLike.likes = cardFiltered;
-//       cardLike = await cardLike.save();
-//       // return res.send(card);
-//     } else {
-//       cardLike.likes = [...cardLike.likes, req.userData._id];
-//       cardLike = await cardLike.save();
-//       // return res.send(card);
-//     }
-//     res.json(cardLike);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
 
 //http://localhost:8181/api/cards/:id
 router.patch("/:id", authmw, async (req, res) => {
@@ -216,11 +182,11 @@ router.delete(
   async (req, res) => {
     try {
       let num = 400;
-      await idUserValidation(req.params.id);
+      await cardsValidationService.idUserValidation(req.params.id);
       num = 500;
       const cardFromDB = await cardsServiceModel.deleteCard(req.params.id);
       if (cardFromDB) {
-        res.json({ msg: "card deleted" });
+        res.json(cardFromDB);
       } else {
         res.json({ msg: "could not find the card" });
       }
