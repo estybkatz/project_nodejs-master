@@ -65,7 +65,7 @@ request:
 
 You will need to provide a token to get an answer from this api
 
-#### For User information update/edit
+### For User information update/edit
 
 PUT /http://localhost:8181/api/auth/users/:id
 

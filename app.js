@@ -13,14 +13,14 @@ const { logErrorToFile } = require("./utils/fileLogger");
 
 const app = express();
 
-//app.use(cors());
-app.use(
-  cors({
-    origin: ["http://authorizedaddress", "https://authorizedaddress"],
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: ["http://authorizedaddress"],
 
-    optionsSuccessStatus: 200,
-  })
-);
+//     optionsSuccessStatus: 200,
+//   })
+// );
 
 app.use(
   morgan((tokens, req, res) => {
