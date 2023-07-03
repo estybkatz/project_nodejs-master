@@ -94,24 +94,24 @@ You will need to provide a token to get an answer from this api
 
 ### Cards:
 
-#### To receive all business cards
+### To receive all business cards
 
 GET /http://localhost:8181/api/cards
 
-#### To receive all business cards of the registered user
+### To receive all business cards of the registered user
 
 GET /http://localhost:8181/api/cards/my-cards
 
 - must provide token
   You will need to provide a token to get an answer from this api
 
-#### To get a business card of a specific business
+### To get a business card of a specific business
 
 GET/ http://localhost:8181/api/cards/:id
 
 id of the card is required
 
-#### To create a new business card
+### To create a new business card
 
 POST /http://localhost:8181/api/cards
 
@@ -120,7 +120,7 @@ request:
 - must provide token
   \*\* must registered as biz user
 
-  #### To update a business card
+  ### To update a business card
 
 PUT/ http://localhost:8181/api/cards/:id
 
@@ -145,7 +145,7 @@ request:
   \*\* must be a registered user.
   You will need to provide a token to get an answer from this api
 
-#### To delete a business card
+### To delete a business card
 
 DELETE / http://localhost:8181/api/cards/:id
 
