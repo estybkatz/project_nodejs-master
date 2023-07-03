@@ -35,6 +35,26 @@ And if there are no login errors you should see the message painted in cyan:
 
 `connected to MongoDb!`
 
+## User Types
+
+### Admin Users
+
+- Admin users have full control over the system.
+- They can perform view all details of users, delete users and cards, and change card numbers.
+- you cannot register as an admin user, please contact the system if you want to be an admin.
+
+### Business Users
+
+- Business users can create cards ,delete their cards, and favorite them.
+- They cannot perform actions related to user management excluding to stop being a business card.
+- To create a business user, set the isBiz property to "true" during registration.
+
+### Regular Users
+
+- Regular users can only favorite cards.
+- They cannot create or update cards.
+- To create a regular user, set the isBiz property to "false" during registration.
+
 ### Available Routes
 
 ### User:
@@ -61,9 +81,7 @@ GET /http://localhost:8181/api/auth/users/:id
 request:
 
 - must provide token
-  \*\* must be registered as admin, A business type user will only be able to receive his details
-
-You will need to provide a token to get an answer from this api
+  \*\* must be registered either an admin, or the user himself.
 
 #### For User information update/edit
 
@@ -72,8 +90,6 @@ PUT /http://localhost:8181/api/auth/users/:id
 - must provide token
   \*\* must be the registered user
 
-You will need to provide a token to get an answer from this api.
-
 #### Change isBusiness status
 
 PATCH /http://localhost:8181/api/auth/users/:id
@@ -81,16 +97,12 @@ PATCH /http://localhost:8181/api/auth/users/:id
 - must provide token
   \*\* must be the registered user
 
-You will need to provide a token to get an answer from this api.
-
 #### Delete user
 
 DELETE /http://localhost:8181/api/auth/users/:id
 
 - must provide token
-  \*\* must be the user who created the card or to be Admin.
-
-You will need to provide a token to get an answer from this api
+  \*\* must be the user who wants to be deleted or to be Admin.
 
 ### Cards:
 
@@ -131,7 +143,7 @@ request:
 
 #### to edit bizNumber
 
-PUT/ http://localhost:8181/api/cards/:id
+PUT/ http://localhost:8181/api/biznum/:id
 request:
 
 - must provide token
@@ -143,7 +155,6 @@ PATCH http://localhost:8181/api/cards/:id
 
 - must provide token
   \*\* must be a registered user.
-  You will need to provide a token to get an answer from this api
 
 #### To delete a business card
 
@@ -151,4 +162,3 @@ DELETE / http://localhost:8181/api/cards/:id
 
 - must provide token
   \*\* must registered the use who created the card or admin user
-  You will need to provide a token to get an answer from this api
