@@ -130,8 +130,8 @@ router.put(
   async (req, res) => {
     let num = 400;
     try {
-      id = await idUserValidation(req.params.id);
-      registered = await registerUserValidation(req.body);
+      await idUserValidation(req.params.id);
+      await registerUserValidation(req.body);
       num = 500;
       req.body.password = await hashService.generateHash(req.body.password);
       if (req.body.password) num = 400;
@@ -192,11 +192,12 @@ router.delete(
   authmw,
   permissionsMiddlewareUser(false, true, true),
   async (req, res) => {
+    let userToDelete, deletedUser;
     try {
       await idUserValidation(req.params.id);
-      const userToDelete = await usersServiceModel.getUserdById(req.params.id);
-      const deletedUser = await usersServiceModel.deleteUser(req.params.id);
-      res.json(deletedUser);
+      userToDelete = await usersServiceModel.getUserdById(req.params.id);
+      deletedUser = await usersServiceModel.deleteUser(req.params.id);
+      res.status(200).json({ msg: "delete success" });
     } catch (err) {
       let num = 400;
       if (userToDelete && deletedUser === null) num = 500;

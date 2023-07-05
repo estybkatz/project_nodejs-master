@@ -1,0 +1,28 @@
+Timestamp: 2023-07-05T11:06:07.876Z
+Status Code: 400
+Error: ValidationError: "value" length must be 24 characters long
+
+Timestamp: 2023-07-05T11:06:35.154Z
+Status Code: 404
+Error: card not found
+
+Timestamp: 2023-07-05T11:09:06.220Z
+Status Code: 400
+Error: RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: { msg: 'delete success' }
+
+Timestamp: 2023-07-05T11:09:58.226Z
+Status Code: 400
+Error: RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: { msg: 'delete success' }
+
+Timestamp: 2023-07-05T11:10:18.357Z
+Status Code: 400
+Error: RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: { msg: 'delete success' }
+
+Timestamp: 2023-07-05T11:10:59.374Z
+Status Code: 400
+Error: RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: { msg: 'delete success' }
+
+Timestamp: 2023-07-05T11:11:16.371Z
+Status Code: 400
+Error: RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: { msg: 'delete success' }
+
