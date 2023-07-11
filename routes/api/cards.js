@@ -161,7 +161,7 @@ router.patch("/:id", authmw, async (req, res) => {
     card = await card.save();
     return res.send(card);
   } catch (error) {
-    logErrorToFile(err.msg, 500);
+    logErrorToFile(error.msg, 500);
     return res.status(500).send(error);
   }
 });
